@@ -14,11 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.example.assginment.InternetConnection;
 import com.google.gson.Gson;
 import com.example.assginment.EndlessRecyclerViewScrollListener;
 import com.example.assginment.adapter.MyAdapter;
@@ -31,13 +33,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     RecyclerView rvList;
-/*    private static final String FULL_EXTRAS = "views,media,path_alias,url_sq,url_t,url_s,url_q,url_m,url_n,url_z,url_c,url_l,url_o";
-    private static final String USER_ID = "187016535@N03";
-    private static final String KEY_TOKEN = "9d788c3ae7173a1cda830edcc1be5792";
-    private static final String KEY_TOKEN1 = "214108567c95be5668351078c66d4829";
-    private static final String GET_FAVORITE = "flickr.favorites.getList";*/
+    /*    private static final String FULL_EXTRAS = "views,media,path_alias,url_sq,url_t,url_s,url_q,url_m,url_n,url_z,url_c,url_l,url_o";
+        private static final String USER_ID = "187016535@N03";
+        private static final String KEY_TOKEN = "9d788c3ae7173a1cda830edcc1be5792";
+        private static final String KEY_TOKEN1 = "214108567c95be5668351078c66d4829";
+        private static final String GET_FAVORITE = "flickr.favorites.getList";*/
     int pages = 1;
     List<PhotoFavorite> photoFavoriteList;
 
@@ -54,25 +56,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
         rvList = findViewById(R.id.rvList);
         srlRefesh = findViewById(R.id.srlRefesh);
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        srlRefesh.setOnRefreshListener(this);
+        if (InternetConnection.checkConnection(this)) {
+            showData();
+            srlRefesh.setOnRefreshListener(this);
 
-        //refesh
-        srlRefesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                photoFavoriteList.clear();
-//                AndroidFast();
-                myAdapter.notifyDataSetChanged();
-                myAdapter.notifyItemChanged(0, photoFavoriteList.size());
-                pages = 1;
-                AndroidFast();
-                srlRefesh.setRefreshing(false);
-            }
-        });
+        } else {
+            Toast.makeText(this, "Xin hãy kiểm tra kết nối Internet", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void showData() {
         photoFavoriteList = new ArrayList<>();
 
         myAdapter = new MyAdapter(photoFavoriteList, MainActivity.this);
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         rvList.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 
-
     public void AndroidFast() {
         AndroidNetworking.get("https://www.flickr.com/services/rest/")
                 .addQueryParameter("method", "flickr.favorites.getList")
@@ -119,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                         // thông báo cập nhật lại một vị trí được thêm mới
                         myAdapter.notifyItemInserted(photoFavoriteList.size());
 
-                        PictureActivity.photoFavoriteList=photoFavoriteList;
+                        PictureActivity.photoFavoriteList = photoFavoriteList;
                         Log.e("11", 2222 + "");
                         //nếu đến page cuối thì không load nữa
                         if (exampleFavorite.getPhotosFavorite().getPhotoFavorite().size() == exampleFavorite.getPhotosFavorite().getPhotoFavorite().size() - 1) {
@@ -134,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,5 +166,21 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRefresh() {
+        if (InternetConnection.checkConnection(MainActivity.this)) {
+            showData();
+            photoFavoriteList.clear();
+            myAdapter.notifyDataSetChanged();
+            myAdapter.notifyItemChanged(0, photoFavoriteList.size());
+            pages = 1;
+            AndroidFast();
+            srlRefesh.setRefreshing(false);
+        } else {
+            Toast.makeText(MainActivity.this, "Xin hãy kiểm tra kết nối Internet", Toast.LENGTH_SHORT).show();
+            srlRefesh.setRefreshing(false);
+        }
     }
 }

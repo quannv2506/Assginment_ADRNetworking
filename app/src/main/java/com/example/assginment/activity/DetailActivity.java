@@ -66,7 +66,7 @@ public class DetailActivity extends AppCompatActivity {
         btnShare = findViewById(R.id.btnShare);
         btnSetWall = findViewById(R.id.btnSetWall);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         position = bundle.getInt("position");
         title = bundle.getString("Title");
@@ -153,12 +153,17 @@ public class DetailActivity extends AppCompatActivity {
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShareLinkContent content = new ShareLinkContent.Builder()
-                        .setContentUrl(Uri.parse(urlM))
-                        .build();
-
-                ShareDialog shareDialog = new ShareDialog(DetailActivity.this);
-                shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+//                ShareLinkContent content = new ShareLinkContent.Builder()
+//                        .setContentUrl(Uri.parse(urlM))
+//                        .build();
+//
+//                ShareDialog shareDialog = new ShareDialog(DetailActivity.this);
+//                shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, urlM);
+                shareIntent.setPackage("com.facebook.katana");
+                startActivity(shareIntent);
             }
         });
 
