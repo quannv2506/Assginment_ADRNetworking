@@ -84,15 +84,27 @@ public class DetailActivity extends AppCompatActivity {
 
         Log.e("PT", position + "");
 
-//        check(position);
-//        tvName.setText(listUrl.get(listUrl.size() - 1).getTitle());
-//        listUrl = new ArrayList<>();
 
 
         tvTitle.setText(title);
-        btnDownload3.setLabelText(heightM + " x " + widthM);
-        btnDownload2.setLabelText(heightC + " x " + widthC);
-        btnDownload1.setLabelText(heightL + " x " + widthL);
+        if (heightM == null || widthM == null){
+            btnDownload3.setVisibility(View.GONE);
+        } else {
+            btnDownload3.setLabelText(heightM + " x " + widthM);
+        }
+
+        if (heightC == null || widthC == null){
+            btnDownload2.setVisibility(View.GONE);
+        } else {
+            btnDownload2.setLabelText(heightC + " x " + widthC);
+        }
+
+        if (heightL == null || widthL == null){
+            btnDownload1.setVisibility(View.GONE);
+        } else {
+            btnDownload1.setLabelText(heightL + " x " + widthL);
+        }
+
         btnShare.setLabelText("Chia sẻ Facebook");
         btnSetWall.setLabelText("Đặt hình nền");
 
@@ -109,10 +121,10 @@ public class DetailActivity extends AppCompatActivity {
                         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
                         requestPermissions(permissions, PERMISSION_STORAGE_CODE1);
                     } else {
-                        startDownLoading1();
+                        startDownLoading1(urlL);
                     }
                 } else {
-                    startDownLoading1();
+                    startDownLoading1(urlL);
                 }
             }
         });
@@ -125,10 +137,10 @@ public class DetailActivity extends AppCompatActivity {
                         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
                         requestPermissions(permissions, PERMISSION_STORAGE_CODE2);
                     } else {
-                        startDownLoading2();
+                        startDownLoading1(urlC);
                     }
                 } else {
-                    startDownLoading2();
+                    startDownLoading1(urlC);
                 }
             }
         });
@@ -142,10 +154,10 @@ public class DetailActivity extends AppCompatActivity {
                         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
                         requestPermissions(permissions, PERMISSION_STORAGE_CODE3);
                     } else {
-                        startDownLoading3();
+                        startDownLoading1(urlM);
                     }
                 } else {
-                    startDownLoading3();
+                    startDownLoading1(urlM);
                 }
             }
         });
@@ -153,12 +165,6 @@ public class DetailActivity extends AppCompatActivity {
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ShareLinkContent content = new ShareLinkContent.Builder()
-//                        .setContentUrl(Uri.parse(urlM))
-//                        .build();
-//
-//                ShareDialog shareDialog = new ShareDialog(DetailActivity.this);
-//                shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_TEXT, urlM);
@@ -170,13 +176,10 @@ public class DetailActivity extends AppCompatActivity {
         btnSetWall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                 StrictMode.setThreadPolicy(policy);
                 WallpaperManager wpm = WallpaperManager.getInstance(DetailActivity.this);
                 InputStream ins = null;
-
                 try {
                     ins = new URL(urlL).openStream();
                     wpm.setStream(ins);
@@ -189,130 +192,17 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
-//    private void check(int position) {
-//        listUrl = new ArrayList<>();
-//        photoFavoriteList = new ArrayList<>();
-//        if (photoFavoriteList.get(position).getUrlSq() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlSq());
-//            image.setWidth(photoFavoriteList.get(position).getWidthSq().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightSq().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlT() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlT());
-//            image.setWidth(photoFavoriteList.get(position).getWidthT().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightT().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlS() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlS());
-//            image.setWidth(photoFavoriteList.get(position).getWidthS().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightS().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlQ() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlQ());
-//            image.setWidth(photoFavoriteList.get(position).getWidthQ().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightQ().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlM() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlM());
-//            image.setWidth(photoFavoriteList.get(position).getWidthM().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightM().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlN() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlN());
-//            image.setWidth(photoFavoriteList.get(position).getWidthN().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightN().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlZ() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlZ());
-//            image.setWidth(photoFavoriteList.get(position).getWidthZ().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightZ().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlC() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlC());
-//            image.setWidth(photoFavoriteList.get(position).getWidthC().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightC().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlL() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlL());
-//            image.setWidth(photoFavoriteList.get(position).getWidthL().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightL().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//        if (photoFavoriteList.get(position).getUrlO() != null) {
-//            image = new Image();
-//            image.setUrl(photoFavoriteList.get(position).getUrlO());
-//            image.setWidth(photoFavoriteList.get(position).getWidthO().toString());
-//            image.setHeight(photoFavoriteList.get(position).getHeightO().toString());
-//            image.setTitle(photoFavoriteList.get(position).getTitle());
-//            listUrl.add(image);
-//        }
-//    }
-
-    private void startDownLoading1() {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlL));
+    private void startDownLoading1(String url) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        request.setTitle("BackgroundHD" + urlL);
-        request.setDescription(urlL);
+        request.setTitle("BackgroundHD" + url);
+        request.setDescription(url);
         Toast.makeText(this, "Downloading...!", Toast.LENGTH_SHORT).show();
         request.allowScanningByMediaScanner();
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, title + System.currentTimeMillis());
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         downloadManager.enqueue(request);
-    }
-
-    private void startDownLoading2() {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlC));
-
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        request.setTitle("BackgroundHD" + urlC);
-        request.setDescription(urlC);
-        Toast.makeText(this, "Downloading...!", Toast.LENGTH_SHORT).show();
-        request.allowScanningByMediaScanner();
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, title + System.currentTimeMillis());
-        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        downloadManager.enqueue(request);
-    }
-
-    private void startDownLoading3() {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlM));
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        request.setTitle("BackgroundHD" + urlM.substring(35));
-        request.setDescription(urlM);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, title + System.currentTimeMillis());
-        Toast.makeText(this, "Downloading...!", Toast.LENGTH_SHORT).show();
-        request.allowScanningByMediaScanner();
-        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        downloadManager.enqueue(request);
-
     }
 
     @Override
@@ -320,21 +210,21 @@ public class DetailActivity extends AppCompatActivity {
         switch (requestCode) {
             case PERMISSION_STORAGE_CODE1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startDownLoading1();
+                    startDownLoading1(urlL);
                 } else {
                     Toast.makeText(DetailActivity.this, "Denied", Toast.LENGTH_SHORT).show();
                 }
             }
             case PERMISSION_STORAGE_CODE2: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startDownLoading2();
+                    startDownLoading1(urlC);
                 } else {
                     Toast.makeText(DetailActivity.this, "Denied", Toast.LENGTH_SHORT).show();
                 }
             }
             case PERMISSION_STORAGE_CODE3: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startDownLoading3();
+                    startDownLoading1(urlM);
                 } else {
                     Toast.makeText(DetailActivity.this, "Denied", Toast.LENGTH_SHORT).show();
                 }
