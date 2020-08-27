@@ -10,6 +10,8 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +31,9 @@ import com.example.assginment.model.PhotoFavorite;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.github.clans.fab.FloatingActionButton;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -48,8 +53,6 @@ public class DetailActivity extends AppCompatActivity {
     String pathalias, title, urlM, urlC, urlL, heightM, widthM, heightC, widthC, heightL, widthL;
 
     int position;
-    ArrayList<Image> listUrl;
-    Image image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +186,7 @@ public class DetailActivity extends AppCompatActivity {
                 try {
                     ins = new URL(urlL).openStream();
                     wpm.setStream(ins);
-                    Toast.makeText(DetailActivity.this, "Đã thay đổi ảnh nền", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailActivity.this, "Đã đặt ảnh nền", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
 
@@ -191,6 +194,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void startDownLoading1(String url) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
